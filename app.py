@@ -11,8 +11,8 @@ dsn = oracledb.makedsn(
 )
 
 db_config = {
-    "user": "j16patel",
-    "password": "07283346",
+    "user": "User_name",         # Update your username
+    "password": "Password",      # Update Password
     "dsn": dsn
 }
 
