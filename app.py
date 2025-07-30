@@ -190,6 +190,36 @@ def staff_update():
             connection.close()
             print("Connection closed successfully.")
 
+###### Staff Delete API #######
+
+@app.route('/api/staff/delete', methods=['DELETE'])
+def staff_delete():
+    connection = None
+    try:
+        data = request.get_json()
+        staffno = data.get('staffNo')
+
+        if not staffno:
+            return jsonify({"error": "Staff number is required"}), 400
+        
+        connection = oracledb.connect(**db_config)
+        cursor = connection.cursor()
+        cursor.callproc("Staff_terminate_sp", [staffno])
+        connection.commit()
+        return jsonify({"message": "Staff Record Deleted Successfully!"}), 200
+    
+    except oracledb.DatabaseError as e:
+        error, = e.args
+        connection.rollback()
+        return jsonify({"message": f"Failed to delete staff: {error.message}"}), 500
+    except Exception as e:
+        if connection:
+            connection.rollback()
+        return jsonify({"message": f"An unexpected error occurred: {str(e)}"}), 500
+    finally:
+        if connection:
+            connection.close()
+            print("Connection closed successfully.")
 
 if __name__ == '__main__':
     app.run(debug=True, port=3000)
