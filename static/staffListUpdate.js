@@ -37,12 +37,19 @@ document.addEventListener('DOMContentLoaded', () => {
                     updateButton.className = 'update-button';
                     updateButton.onclick = () => updateStaffRecord(field.staffNo, row);
                     actionsCell.appendChild(updateButton);
+
+                    const deleteButton = document.createElement('button');
+                    deleteButton.textContent = 'Delete';
+                    deleteButton.style.marginLeft = '10px';
+                    deleteButton.className = 'delete-button';
+                    deleteButton.onclick = () => deleteStaffRecord(field.staffNo);
+                    actionsCell.appendChild(deleteButton);
                 });
             } else {
                 messageDiv.textContent = `Error: ${staffList.message || 'Failed to load staff data.'}`;
                 messageDiv.style.color = 'red';
             }
-        }catch (error) {
+        } catch (error) {
             console.error('Network error:', error);
             messageDiv.textContent = 'Network error. Could not connect to the server.';
             messageDiv.style.color = 'red';
@@ -76,6 +83,36 @@ document.addEventListener('DOMContentLoaded', () => {
             if (response.ok) {
                 messageDiv.textContent = result.message || 'Staff record updated successfully.';
                 messageDiv.style.color = 'green';
+            } else {
+                messageDiv.textContent = `Error: ${result.message || 'Failed to update staff.'}`;
+                messageDiv.style.color = 'red';
+            }
+        } catch (error) {
+            console.error('Network error:', error);
+            messageDiv.textContent = 'Network error. Could not connect to the server.';
+            messageDiv.style.color = 'red';
+        }
+    }
+
+    async function deleteStaffRecord(staffNo) {
+        if (!confirm(`Are you sure you want to delete staff number ${staffNo}?`)) {
+            return;
+        }
+
+        try {
+            const response = await fetch('/api/staff/delete', {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ staffNo: staffNo })
+            });
+
+            const result = await response.json();
+            if (response.ok) {
+                messageDiv.textContent = result.message || 'Staff record deleted successfully.';
+                messageDiv.style.color = 'green';
+                fetchStaff();
             } else {
                 messageDiv.textContent = `Error: ${result.message || 'Failed to update staff.'}`;
                 messageDiv.style.color = 'red';
