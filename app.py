@@ -11,8 +11,8 @@ dsn = oracledb.makedsn(
 )
 
 db_config = {
-    "user": "User_name",         # Update your username
-    "password": "Password",      # Update Password
+    "user": "",        # UserName
+    "password": "",    # Password
     "dsn": dsn
 }
 
@@ -35,14 +35,29 @@ def dream_home():
 def staff_main_menu():
     return render_template('staffMainMenu.html')
 
-@app.route('/staffMainMenuForm.html')
+@app.route('/employeeHireForm.html')
 def staff_main_menu_form():
-    return render_template('staffMainMenuForm.html')
+    return render_template('employeeHireForm.html')
 
 @app.route('/staffListUpdate.html')
 def staff_list_update():
     return render_template('staffListUpdate.html')
 
+@app.route('/branchMainMenu.html')
+def branch_main_menu():
+    return render_template('branchMainMenu.html')
+
+@app.route('/branchAddressLookup.html')
+def branch_address_lookup():
+    return render_template('branchAddressLookup.html')
+
+@app.route('/branchUpdateList.html')
+def branch_address_update():
+    return render_template('branchUpdateList.html')
+
+@app.route('/newBranchForm.html')
+def add_new_branch():
+    return render_template('newBranchForm.html')
 
 
 ###### Staff Hire API #######
@@ -220,6 +235,150 @@ def staff_delete():
         if connection:
             connection.close()
             print("Connection closed successfully.")
+
+###### Branch Address Lookup API #######
+
+@app.route('/api/branch/address', methods=['POST'])
+def get_branch_address():
+    connection = None
+    try:
+        data = request.get_json()
+        branch_no = data.get('branchNo')
+
+        if not branch_no:
+            return jsonify({"error": "Branch number is required"}), 400
+
+        connection = oracledb.connect(**db_config)
+        cursor = connection.cursor()
+
+        result_address = cursor.callfunc("GET_BRANCH_ADDRESS", oracledb.STRING, [branch_no])
+
+        if result_address and result_address not in ['Branch not found', 'Error retrieving branch address']:
+            return jsonify({"address": result_address}), 200
+        elif result_address == 'Branch not found':
+            return jsonify({"message": "Branch not found for the given number."}), 404
+        else:
+            return jsonify({"message": result_address or "An error occurred fetching branch address."}), 500
+
+    except oracledb.DatabaseError as e:
+        error, = e.args
+        print("Database error:", error.message)
+        return jsonify({"message": f"Failed to retrieve branch address: {error.message}"}), 500
+    except Exception as e:
+        print("General Error:", e)
+        return jsonify({"message": f"An unexpected error occurred: {str(e)}"}), 500
+    finally:
+        if connection:
+            connection.close()
+            print("Connection closed successfully.")
+
+###### Branch List API #######
+
+@app.route('/api/branch/list', methods=['GET'])
+def get_branch_list():
+    connection = None
+    try:
+        connection = oracledb.connect(**db_config)
+        cursor = connection.cursor()
+        cursor.execute("SELECT branchNo, street, city, postcode FROM DH_BRANCH")
+        branch_records = cursor.fetchall()
+
+        branch_list = []
+        for record in branch_records:
+            branch_list.append({
+                "branchNo": record[0],
+                "street": record[1],
+                "city": record[2],
+                "postCode": record[3]
+            })
+        return jsonify(branch_list), 200
+
+    except oracledb.DatabaseError as e:
+        error, = e.args
+        print("Database error:", error.message)
+        return jsonify({"message": f"Failed to retrieve branch list: {error.message}"}), 500
+    except Exception as e:
+        print("General Error:", e)
+        return jsonify({"message": f"An unexpected error occurred: {str(e)}"}), 500
+    finally:
+        if connection:
+            connection.close()
+            print("Connection closed successfully.")
+
+###### Branch Update API #######
+
+@app.route('/api/branch/update', methods=['POST'])
+def branch_update():
+    connection = None
+    try:
+        data = request.get_json()
+        branch_no = data.get('branchNo')
+        street = data.get('street')
+        city = data.get('city')
+        postCode = data.get('postCode')
+
+        if not all([branch_no, street, city, postCode]):
+            return jsonify({"error": "All fields are required"}), 400
+
+        connection = oracledb.connect(**db_config)
+        cursor = connection.cursor()
+        cursor.callproc("UPDATE_BRANCH_ADDRESS", [branch_no, street, city, postCode])
+        connection.commit()
+        return jsonify({"message": "Branch Record Updated Successfully!"}), 200
+
+    except oracledb.DatabaseError as e:
+        error, = e.args
+        if connection:
+            connection.rollback()
+        print("Database error:", error.message)
+        return jsonify({"message": f"Failed to update branch: {error.message}"}), 500
+    except Exception as e:
+        if connection:
+            connection.rollback()
+        print("General Error:", e)
+        return jsonify({"message": f"An unexpected error occurred: {str(e)}"}), 500
+    finally:
+        if connection:
+            connection.close()
+            print("Connection closed successfully.")
+
+###### Open New Branch API #######
+
+@app.route('/api/branch/new', methods=['POST'])
+def new_branch():
+    connection = None
+    try:
+        data = request.get_json()
+        branch_no = data.get('branchNo')
+        street = data.get('street')
+        city = data.get('city')
+        postCode = data.get('postCode')
+
+        if not all([branch_no, street, city, postCode]):
+            return jsonify({"error": "All fields are required"}), 400
+
+        connection = oracledb.connect(**db_config)
+        cursor = connection.cursor()
+        cursor.callproc("new_branch", [branch_no, street, city, postCode])
+        connection.commit()
+        return jsonify({"message": "Branch opened successfully!"}), 201
+
+    except oracledb.DatabaseError as e:
+        error, = e.args
+        if connection:
+            connection.rollback()
+        print("Database error:", error.message)
+        return jsonify({"message": f"Failed to open branch: {error.message}"}), 500
+    except Exception as e:
+        if connection:
+            connection.rollback()
+        print("General Error:", e)
+        return jsonify({"message": f"An unexpected error occurred: {str(e)}"}), 500
+    finally:
+        if connection:
+            connection.close()
+            print("Connection closed successfully.")
+
 
 if __name__ == '__main__':
     app.run(debug=True, port=3000)
