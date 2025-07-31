@@ -1,0 +1,8 @@
+create or replace PROCEDURE STAFF_TERMINATE_SP (
+    p_staffno IN dh_staff.staffno%TYPE
+) IS
+BEGIN
+    DELETE FROM DH_STAFF
+    WHERE STAFFNO=p_staffno;
+    COMMIT;
+END STAFF_TERMINATE_SP;
