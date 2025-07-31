@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Staff Main Menu</title>
+        <link href="{{ url_for('static', filename='styles.css') }}" rel="stylesheet">
+    </head>
+
+    <body>
+        <div class="top-bar">
+            <a href="dreamHome.html">
+                <div class="home">🏠︎</div>
+            </a>
+            <div class="title">Dream Home Real Estate</div>
+        </div>
+        <div class="background-container">
+            <div class="staffMainMenu-overlay">
+                <div class="staffMainMenu-card-grid">
+                    <a href="employeeHireForm.html">
+                        <div class="card">
+                            <div class="icon-placeholder">👤</div>
+                            <p class="card-text">Hire Employee</p>
+                        </div>
+                    </a>
+                    <a href="staffListUpdate.html">
+                        <div class="card">
+                            <div class="icon-placeholder">👥</div>
+                            <p class="card-text">List or Update Employees</p>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

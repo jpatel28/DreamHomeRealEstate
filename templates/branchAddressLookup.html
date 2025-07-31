@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Branch Address Lookup</title>
+        <link href="{{ url_for('static', filename='styles.css') }}" rel="stylesheet">
+
+    </head>
+    <body>
+        <div class="top-bar">
+            <a href="dreamHome.html">
+                <div class="home">🏠︎</div>
+            </a>
+            <div class="title">Dream Home Real Estate</div>
+        </div>
+        <div class="form-container">
+            <h2>Find Branch Address</h2>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="branchNoLookup">Branch No.:</label>
+                    <input type="text" id="branchNoLookup" placeholder="e.g., B003">
+                </div>
+            </div>
+            <div class="form-row">
+                <div id="addressDisplayContainer" style="margin-top: 1rem;"></div>
+            </div>
+            <div class="button-row">
+                <a href="branchMainMenu.html">
+                    <button type="cancel" class="cancel-button">Cancel</button>
+                </a>
+                <button type="button" id="lookupBranchButton" class="hire-button">Lookup Address</button>
+            </div>
+            <p id="message" style="text-align: center; margin-top: 1rem;"></p>
+        </div>
+        <script src="{{ url_for('static', filename='branchAddressLookup.js') }}"></script>
+    </body>
+</html>

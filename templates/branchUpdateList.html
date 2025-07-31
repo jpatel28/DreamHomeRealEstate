@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Current Branch list</title>
+        <link href="{{ url_for('static', filename='styles.css') }}" rel="stylesheet">
+
+    </head>
+    <body>
+        <div class="top-bar">
+            <a href="dreamHome.html">
+                <div class="home">🏠︎</div>
+            </a>
+            <div class="title">Dream Home Real Estate</div>
+            <a href="\branchMainMenu.html">
+                <div class="back">く</div>
+            </a>
+        </div>
+        <div class="branchTable-container">
+            <h2>Current Branch List</h2>
+            <table id="branchTable">
+                <thead>
+                    <tr>
+                        <th>Branch No.</th>
+                        <th>Street</th>
+                        <th>City</th>
+                        <th>Postcode</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    </tbody>
+            </table>
+            <p id="message" style="text-align: center; margin-top: 1rem;"></p>
+        </div>
+        <script src="{{ url_for('static', filename='branchUpdateList.js') }}"></script>
+    </body>
+</html>

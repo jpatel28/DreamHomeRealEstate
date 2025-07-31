@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Branch Main Menu</title>
+        <link href="{{ url_for('static', filename='styles.css') }}" rel="stylesheet">
+    </head>
+
+    <body>
+        <div class="top-bar">
+            <a href="dreamHome.html">
+                <div class="home">🏠︎</div>
+            </a>
+            <div class="title">Dream Home Real Estate</div>
+        </div>
+        <div class="background-container">
+            <div class="branchMainMenu-overlay">
+                <div class="branchMainMenu-card-grid ">
+                    <a href="branchAddressLookup.html">
+                        <div class="card">
+                            <div class="icon-placeholder">📍</div>
+                            <p class="card-text">Find Branch Address</p>
+                        </div>
+                    </a>
+                    <a href="branchUpdateList.html">
+                        <div class="card">
+                            <div class="icon-placeholder">🏢</div>
+                            <p class="card-text">List & Update Branches</p>
+                        </div>
+                    </a>
+                    <a href="newBranchForm.html">
+                        <div class="card">
+                            <div class="icon-placeholder">➕</div>
+                            <p class="card-text">Open New Branch</p>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
