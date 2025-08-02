@@ -1,0 +1,62 @@
+document.addEventListener('DOMContentLoaded', () => {
+    const deleteButton = document.getElementById('deleteButton');
+    const messageDiv = document.getElementById('message');
+
+    function hideMessage() {
+        messageDiv.textContent = '';
+        messageDiv.classList.remove('message-success', 'message-error');
+    }
+
+    deleteButton.addEventListener('click', async () => {
+        const clientNo = document.getElementById('clientNo').value;
+
+        if (!clientNo) {
+            messageDiv.textContent = 'Please enter a client number to delete.';
+            messageDiv.style.color = 'red';
+            return;
+        }
+
+        // Confirm deletion
+        if (!confirm(`Are you sure you want to delete client ${clientNo}?`)) {
+            return;
+        }
+
+        try {
+            const response = await fetch('/api/client/delete', {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ clientNo })
+            });
+
+            let result;
+            try {
+                result = await response.json();
+            } catch (jsonError) {
+                const text = await response.text();
+                console.error("Non-JSON response:", text);
+                throw new Error("Invalid server response");
+            }
+
+            if (response.ok) {
+                messageDiv.textContent = result.message || 'Client Successfully Deleted!';
+                messageDiv.style.color = 'green';
+
+                // Clear form field after successful deletion
+                document.getElementById('clientNo').value = '';
+            } else {
+                messageDiv.textContent = `Error: ${result.message || 'Something went wrong'}`;
+                messageDiv.classList.remove('message-success');
+                messageDiv.classList.add('message-error');
+                setTimeout(hideMessage, 4000);
+            }
+        } catch (error) {
+            console.error('Network error:', error);
+            messageDiv.textContent = 'Network error. Could not connect to the server.';
+            messageDiv.classList.remove('message-success');
+            messageDiv.classList.add('message-error');
+            setTimeout(hideMessage, 4000);
+        }
+    });
+}); 

@@ -59,6 +59,22 @@ def branch_address_update():
 def add_new_branch():
     return render_template('newBranchForm.html')
 
+@app.route('/clientMainMenu.html')
+def client_main_menu():
+    return render_template('clientMainMenu.html')
+
+@app.route('/clientRegistrationForm.html')
+def client_registration_form():
+    return render_template('clientRegistrationForm.html')
+
+@app.route('/clientDeleteForm.html')
+def client_delete_form():
+    return render_template('clientDeleteForm.html')
+
+@app.route('/clientList.html')
+def client_list():
+    return render_template('clientList.html')
+
 
 ###### Staff Hire API #######
 
@@ -373,6 +389,137 @@ def new_branch():
         if connection:
             connection.rollback()
         print("General Error:", e)
+        return jsonify({"message": f"An unexpected error occurred: {str(e)}"}), 500
+    finally:
+        if connection:
+            connection.close()
+            print("Connection closed successfully.")
+
+
+###### Client Registration API #######
+
+@app.route('/api/client/register', methods=['POST'])
+def client_register():
+    connection = None
+    try:
+        data = request.get_json()
+        clientno = data.get('clientNo')
+        first_name = data.get('firstName')
+        last_name = data.get('lastName')
+        telno = data.get('telNo')
+        street = data.get('street')
+        city = data.get('city')
+        email = data.get('email')
+        preftype = data.get('prefType')
+        maxrent = data.get('maxRent')
+
+        if not all([clientno, first_name, last_name, telno, street, city, email, preftype, maxrent]):
+            return jsonify({"error": "All fields are required"}), 400
+        
+        connection = oracledb.connect(**db_config)
+        print("Connection successful!")
+        
+        cursor = connection.cursor()
+        cursor.callproc(
+            "CLIENT_REGISTER_SP",
+            [   
+                clientno,
+                first_name,
+                last_name,
+                telno,
+                street,
+                city,
+                email,
+                preftype,
+                maxrent
+            ]
+        )
+        connection.commit()
+
+        return jsonify({"message": "Client registered successfully!"}), 201
+
+    except oracledb.DatabaseError as e:
+        error, = e.args
+        print("Database connection failed:", e)
+        print("Oracle Error:", error.message)
+        if connection:
+            connection.rollback()
+        return jsonify({"message": f"Failed to register client: {error.message}"}), 500
+    
+    except Exception as e:
+        print("General Error:", e)
+        if connection:
+            connection.rollback()
+        return jsonify({"message": f"An unexpected error occurred: {str(e)}"}), 500
+    finally:
+        if connection:
+            connection.close()
+            print("Connection closed successfully.")
+
+###### Client List API #######
+
+@app.route('/api/client/list', methods=['GET'])
+def get_client_list():
+    connection = None
+    try:
+        connection = oracledb.connect(**db_config)
+        cursor = connection.cursor()
+        cursor.execute("SELECT clientno, fname, lname, telno, street, city, email, preftype, maxrent FROM DH_CLIENT")
+        client_records = cursor.fetchall()
+
+        client_list = []
+        for record in client_records:
+            client_list.append({
+                "clientNo": record[0],
+                "firstName": record[1],
+                "lastName": record[2],
+                "telNo": record[3],
+                "street": record[4],
+                "city": record[5],
+                "email": record[6],
+                "prefType": record[7],
+                "maxRent": record[8]
+            })
+        return jsonify(client_list), 200
+
+    except oracledb.DatabaseError as e:
+        error, = e.args
+        print("Database error:", error.message)
+        return jsonify({"message": f"Failed to retrieve client list: {error.message}"}), 500
+    except Exception as e:
+        print("General Error:", e)
+        return jsonify({"message": f"An unexpected error occurred: {str(e)}"}), 500
+    finally:
+        if connection:
+            connection.close()
+            print("Connection closed successfully.")
+
+###### Client Delete API #######
+
+@app.route('/api/client/delete', methods=['DELETE'])
+def client_delete():
+    connection = None
+    try:
+        data = request.get_json()
+        clientno = data.get('clientNo')
+
+        if not clientno:
+            return jsonify({"error": "Client number is required"}), 400
+        
+        connection = oracledb.connect(**db_config)
+        cursor = connection.cursor()
+        cursor.callproc("DELETE_CLIENT_SP", [clientno])
+        connection.commit()
+        return jsonify({"message": "Client Record Deleted Successfully!"}), 200
+    
+    except oracledb.DatabaseError as e:
+        error, = e.args
+        if connection:
+            connection.rollback()
+        return jsonify({"message": f"Failed to delete client: {error.message}"}), 500
+    except Exception as e:
+        if connection:
+            connection.rollback()
         return jsonify({"message": f"An unexpected error occurred: {str(e)}"}), 500
     finally:
         if connection:
