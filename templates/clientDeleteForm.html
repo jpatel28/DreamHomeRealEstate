@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Delete Client</title>
+        <link href="{{ url_for('static', filename='styles.css') }}" rel="stylesheet">
+    </head>
+    <body>
+        <div class="top-bar">
+            <a href="dreamHome.html">
+                <div class="home">🏠︎</div>
+            </a>
+            <div class="title">Dream Home Real Estate</div>
+        </div>
+        <div class="form-container">
+            <h2>Delete Client</h2>
+            <div class="section-content">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="clientNo">Client No.:</label>
+                        <input type="text" id="clientNo" value="" placeholder="e.g., CR74">
+                    </div>
+                </div>
+            </div>
+
+            <div class="button-row">
+                <a href="clientMainMenu.html">
+                    <button type="cancel" class="cancel-button">Cancel</button>
+                </a>
+                <button type="submit" id="deleteButton" class="deletebutton">Delete Client</button>
+            </div>
+            <p id="message" style="text-align: center; margin-top: 1rem;"></p>
+        </div>
+        <script src="{{ url_for('static', filename='clientDelete.js') }}"></script>
+    </body>
+</html> 

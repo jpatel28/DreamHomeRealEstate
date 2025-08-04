@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Register New Client</title>
+        <link href="{{ url_for('static', filename='styles.css') }}" rel="stylesheet">
+    </head>
+    <body>
+        <div class="top-bar">
+            <a href="dreamHome.html">
+                <div class="home">🏠︎</div>
+            </a>
+            <div class="title">Dream Home Real Estate</div>
+        </div>
+        <div class="form-container">
+            <div class="section-content">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="clientNo">Client No.:</label>
+                        <input type="text" id="clientNo" value="">
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="firstName">First Name:</label>
+                        <input type="text" id="firstName" value="">
+                    </div>
+                    <div class="form-group">
+                        <label for="lastName">Last Name:</label>
+                        <input type="text" id="lastName" value="">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="street">Street:</label>
+                        <input type="text" id="street" value="">
+                    </div>
+                    <div class="form-group">
+                        <label for="city">City:</label>
+                        <input type="text" id="city" value="">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="telNo">Telephone No.:</label>
+                        <input type="text" id="telNo" value="">
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email:</label>
+                        <input type="email" id="email" value="">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="prefType">Property Type:</label>
+                        <select id="prefType" name="prefType">
+                            <option value="" selected></option>
+                            <option value="Flat">Flat</option>
+                            <option value="House">House</option>
+                            <option value="Apartment">Apartment</option>
+                            <option value="Condo">Condo</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="maxRent">Maximum Rent:</label>
+                        <input type="number" id="maxRent" value="" min="0" step="0.01">
+                    </div>
+                </div>
+            </div>
+
+            <div class="button-row">
+                <a href="clientMainMenu.html">
+                    <button type="cancel" class="cancel-button">Cancel</button>
+                </a>
+                <button type="submit" id="registerButton" class="hire-button">Register Client</button>
+            </div>
+            <p id="message" style="text-align: center; margin-top: 1rem;"></p>
+        </div>
+        <script src="{{ url_for('static', filename='clientRegistration.js') }}"></script>
+    </body>
+</html> 

@@ -1,5 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
     const branchTableBody = document.querySelector('#branchTable tbody');
+    const refreshButton = document.getElementById('refreshButton');
     const messageDiv = document.getElementById('message');
 
     function hideMessage() {
@@ -34,6 +35,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     updateButton.onclick = () => updateBranchRecord(field.branchNo, row);
                     actionsCell.appendChild(updateButton);
                     
+                    messageDiv.textContent = 'List has been refreshed.';
+                    messageDiv.classList.remove('message-error');
+                    messageDiv.classList.add('message-success');
+                    setTimeout(hideMessage, 4000);
                 });
             } else {
                 messageDiv.textContent = `Error: ${branchList.message || 'Failed to load branch data.'}`;
@@ -94,5 +99,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    refreshButton.addEventListener('click', fetchBranches);
     fetchBranches();
 });

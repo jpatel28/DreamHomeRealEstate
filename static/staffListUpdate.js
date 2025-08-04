@@ -1,5 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
     const staffTableBody = document.querySelector('#staffTable tbody');
+    const refreshButton = document.getElementById('refreshButton');
     const messageDiv = document.getElementById('message');
 
     function hideMessage() {
@@ -49,6 +50,11 @@ document.addEventListener('DOMContentLoaded', () => {
                     deleteButton.onclick = () => deleteStaffRecord(field.staffNo);
                     actionsCell.appendChild(deleteButton);
                 });
+
+                messageDiv.textContent = 'List has been refreshed.';
+                messageDiv.classList.remove('message-error');
+                messageDiv.classList.add('message-success');
+                setTimeout(hideMessage, 4000);
             } else {
                 messageDiv.textContent = `Error: ${staffList.message || 'Failed to load staff data.'}`;
                 messageDiv.classList.remove('message-success');
@@ -145,6 +151,7 @@ document.addEventListener('DOMContentLoaded', () => {
             setTimeout(hideMessage, 4000);
         }
     }
+    refreshButton.addEventListener('click', fetchStaff);
 
     fetchStaff();
 });
