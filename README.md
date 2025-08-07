@@ -11,7 +11,7 @@ Follow these steps to set up and run the Dream Home Real Estate application:
 ### Prerequisites
 
 1. Python 3: Ensure you have Python 3 installed.
-2. Create a virtual environment:
+2. Create a virtual environment (Optional):
 ```
 python -m venv venv
 ```
@@ -37,6 +37,10 @@ pip install python-oracledb
     - Download the "Basic" or "Basic Light" package for your operating system from the [Oracle Instant Client Downloads page](https://www.oracle.com/database/technologies/instant-client/downloads.html).
     - Extract the contents to a directory
     - Update the lib_dir variable in app.py to point to the directory where you extracted the Instant Client.
+    - Update the `app.py` file to have the correct path for Oracle Instant Client
+      ```
+      oracledb.init_oracle_client(lib_dir=r"-----Absolute Path------")
+      ``` 
 
 # Database Configuration
 1. Oracle Database: Ensure you have an Oracle database instance running and accessible.
