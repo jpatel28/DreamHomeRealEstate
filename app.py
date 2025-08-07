@@ -563,5 +563,29 @@ def client_delete():
             connection.close()
             print("Connection closed successfully.")
 
+###### API to get a list of client numbers #######
+@app.route('/api/clients', methods=['GET'])
+def get_clients():
+    connection = None
+    try:
+        connection = oracledb.connect(**db_config)
+        cursor = connection.cursor()
+        cursor.execute("SELECT clientNo FROM DH_CLIENT ORDER BY clientNo")
+        client_nos = [row[0] for row in cursor.fetchall()]
+
+        return jsonify(client_nos), 200
+
+    except oracledb.DatabaseError as e:
+        error, = e.args
+        print("Database error:", error.message)
+        return jsonify({"message": f"Failed to retrieve clients: {error.message}"}), 500
+    except Exception as e:
+        print("General Error:", e)
+        return jsonify({"message": f"An unexpected error occurred: {str(e)}"}), 500
+    finally:
+        if connection:
+            connection.close()
+            print("Connection closed successfully.")
+
 if __name__ == '__main__':
     app.run(debug=True, port=3000)
