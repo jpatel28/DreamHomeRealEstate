@@ -1,12 +1,56 @@
 document.addEventListener('DOMContentLoaded', () => {
     const hireButton = document.getElementById('hireButton');
     const messageDiv = document.getElementById('message');
+    const branchNoSelect = document.getElementById('branchNo');
+    const positionSelect = document.getElementById('position');
 
     function hideMessage() {
         messageDiv.textContent = '';
         messageDiv.classList.remove('message-success', 'message-error');
     }
 
+    async function fetchBranches() {
+        try {
+            const response = await fetch('/api/branches');
+            if (response.ok) {
+                const branches = await response.json();
+                branches.forEach(branch => {
+                    const option = document.createElement('option');
+                    option.value = branch;
+                    option.textContent = branch;
+                    branchNoSelect.appendChild(option);
+                });
+            } else {
+                console.error('Failed to fetch branches:', response.statusText);
+            }
+        } catch (error) {
+            console.error('Network error fetching branches:', error);
+        }
+    }
+
+    fetchBranches();
+
+    async function fetchPositions() {
+        try {
+            const response = await fetch('/api/staff/positions');
+            if (response.ok) {
+                const positions = await response.json();
+                positions.forEach(position => {
+                    const option = document.createElement('option');
+                    option.value = position;
+                    option.textContent = position;
+                    positionSelect.appendChild(option);
+                });
+            } else {
+                console.error('Failed to fetch positions:', response.statusText);
+            }
+        } catch (error) {
+            console.error('Network error fetching positions:', error);
+        }
+    }
+
+    fetchPositions();
+    
     hireButton.addEventListener('click', async () => {
         const staffNo = document.getElementById('staffNo').value;
         const firstName = document.getElementById('firstName').value;

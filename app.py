@@ -77,7 +77,6 @@ def client_list():
 
 
 ###### Staff Hire API #######
-
 @app.route('/api/staff/hire', methods=['POST'])
 def staff_hire():
     connection = None
@@ -145,8 +144,55 @@ def staff_hire():
             connection.close()
             print("Connection closed successfully.")
 
-###### Staff List API #######
+###### API to get a list of branch numbers #######
+@app.route('/api/branches', methods=['GET'])
+def get_branches():
+    connection = None
+    try:
+        connection = oracledb.connect(**db_config)
+        cursor = connection.cursor()
+        cursor.execute("SELECT branchNo FROM DH_BRANCH ORDER BY branchNo")
+        branch_nos = [row[0] for row in cursor.fetchall()]
 
+        return jsonify(branch_nos), 200
+
+    except oracledb.DatabaseError as e:
+        error, = e.args
+        print("Database error:", error.message)
+        return jsonify({"message": f"Failed to retrieve branches: {error.message}"}), 500
+    except Exception as e:
+        print("General Error:", e)
+        return jsonify({"message": f"An unexpected error occurred: {str(e)}"}), 500
+    finally:
+        if connection:
+            connection.close()
+            print("Connection closed successfully.")
+
+###### API to get a list of unique positions #######
+@app.route('/api/staff/positions', methods=['GET'])
+def get_unique_positions():
+    connection = None
+    try:
+        connection = oracledb.connect(**db_config)
+        cursor = connection.cursor()
+        cursor.execute("SELECT DISTINCT position FROM DH_STAFF ORDER BY position")
+        positions = [row[0] for row in cursor.fetchall()]
+
+        return jsonify(positions), 200
+
+    except oracledb.DatabaseError as e:
+        error, = e.args
+        print("Database error:", error.message)
+        return jsonify({"message": f"Failed to retrieve positions: {error.message}"}), 500
+    except Exception as e:
+        print("General Error:", e)
+        return jsonify({"message": f"An unexpected error occurred: {str(e)}"}), 500
+    finally:
+        if connection:
+            connection.close()
+            print("Connection closed successfully.")
+
+###### Staff List API #######
 @app.route('/api/staff/list', methods=['GET'])
 def get_staff_list():
     connection = None
@@ -187,7 +233,6 @@ def get_staff_list():
 
 
 ###### Staff Update API #######
-
 @app.route('/api/staff/update', methods=['POST'])
 def staff_update():
     connection = None
@@ -222,7 +267,6 @@ def staff_update():
             print("Connection closed successfully.")
 
 ###### Staff Delete API #######
-
 @app.route('/api/staff/delete', methods=['DELETE'])
 def staff_delete():
     connection = None
@@ -253,7 +297,6 @@ def staff_delete():
             print("Connection closed successfully.")
 
 ###### Branch Address Lookup API #######
-
 @app.route('/api/branch/address', methods=['POST'])
 def get_branch_address():
     connection = None
@@ -289,7 +332,6 @@ def get_branch_address():
             print("Connection closed successfully.")
 
 ###### Branch List API #######
-
 @app.route('/api/branch/list', methods=['GET'])
 def get_branch_list():
     connection = None
@@ -322,7 +364,6 @@ def get_branch_list():
             print("Connection closed successfully.")
 
 ###### Branch Update API #######
-
 @app.route('/api/branch/update', methods=['POST'])
 def branch_update():
     connection = None
@@ -359,7 +400,6 @@ def branch_update():
             print("Connection closed successfully.")
 
 ###### Open New Branch API #######
-
 @app.route('/api/branch/new', methods=['POST'])
 def new_branch():
     connection = None
@@ -397,7 +437,6 @@ def new_branch():
 
 
 ###### Client Registration API #######
-
 @app.route('/api/client/register', methods=['POST'])
 def client_register():
     connection = None
@@ -457,7 +496,6 @@ def client_register():
             print("Connection closed successfully.")
 
 ###### Client List API #######
-
 @app.route('/api/client/list', methods=['GET'])
 def get_client_list():
     connection = None
@@ -495,7 +533,6 @@ def get_client_list():
             print("Connection closed successfully.")
 
 ###### Client Delete API #######
-
 @app.route('/api/client/delete', methods=['DELETE'])
 def client_delete():
     connection = None
@@ -525,7 +562,6 @@ def client_delete():
         if connection:
             connection.close()
             print("Connection closed successfully.")
-
 
 if __name__ == '__main__':
     app.run(debug=True, port=3000)
