@@ -65,8 +65,8 @@ db_config = {
 ```
 cd /path/to/your/project
 ```
-2. Run the Flask Server
+2. Run the file
 ```
-flask run
+python ./app.py
 ```
-3. Access the application: Open your web browser and go to http://127.0.0.1:5000 (or the address shown in your terminal). This will load the dreamHome.html page.
+3. Access the application: Open your web browser and go to http://127.0.0.1:3000 (or the address shown in your terminal). This will load the dreamHome.html page.
