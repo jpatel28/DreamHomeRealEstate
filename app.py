@@ -17,7 +17,8 @@ db_config = {
 }
 
 try:
-    oracledb.init_oracle_client(lib_dir=r"C:\Users\jaypa\DATA\CS\Sem 7\CCPS 610\Assignment2\instantclient-basic-windows.x64-23.8.0.25.04\instantclient_23_8")
+    ### Oracle Instant Client Path should be set to the location where you have installed the Oracle Instant Client ###
+    oracledb.init_oracle_client(lib_dir=r"C:\Users\jaypa\DATA\CS\Sem 7\CCPS 610\Assignment2\instantclient-basic-windows.x64-23.8.0.25.04\instantclient_23_8") # Path to Oracle Instant Client
     print("Oracle Client (thick mode) initialized successfully.")
 except Exception as err:
     print("Error initializing Oracle Client (thick mode):", err)
